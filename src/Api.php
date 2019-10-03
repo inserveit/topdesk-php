@@ -8,17 +8,19 @@ use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Exception\ConnectException;
+use Innovaat\Topdesk\Endpoints\Asset;
 use Innovaat\Topdesk\Endpoints\Attachment;
 use Innovaat\Topdesk\Endpoints\Branch;
 use Innovaat\Topdesk\Endpoints\Department;
 use Innovaat\Topdesk\Endpoints\Incident;
+use Innovaat\Topdesk\Endpoints\Operator;
 use Innovaat\Topdesk\Endpoints\Person;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Api
 {
-    use Incident, Branch, Department, Person, Attachment;
+    use Incident, Branch, Department, Person, Operator, Attachment, Asset;
 
     /** @var string */
     protected $endpoint;
@@ -158,16 +160,17 @@ class Api
      * @param array $json
      * @param array $query
      * @param array $options
+     * @param boolean $decode JSON decode response body (defaults to true).
      * @return mixed|ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function request($method, $uri = '', array $json = [], array $query = [], array $options = [])
+    public function request($method, $uri = '', array $json = [], array $query = [], array $options = [], $decode = true)
     {
         $response = $this->client->request($method, $uri, array_merge([
             'json' => $json,
             'query' => $query
         ], $options));
 
-        return json_decode((string)$response->getBody(), true);
+        return $decode ? json_decode((string)$response->getBody(), true) : (string)$response->getBody();
     }
 }
