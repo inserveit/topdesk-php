@@ -71,4 +71,5 @@ $api->request('GET', 'api/incidents/call_types', [
 
 ## Documentation
 - https://developers.topdesk.com/documentation/index.html
-- https://developers.topdesk.com/explorer/?page=supporting-files#/
+- https://developers.topdesk.com/explorer/?page=supporting-files
+- https://developers.topdesk.com/explorer/?page=assets

@@ -72,4 +72,46 @@ trait Incident
     {
         return $this->requestIncident('PUT', "/number/${number}/deescalate");
     }
+
+    /**
+     * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentRequestsByIncidentId
+     */
+    public function getIncidentRequestsByIncidentId($id, $query = []) {
+        return $this->requestIncident('GET', "/id/${id}/requests", [], $query);
+    }
+
+    /**
+     * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentRequestsByIncidentNumber
+     */
+    public function getIncidentRequestsByIncidentNumber($number, $query = []) {
+        return $this->requestIncident('GET', "/number/${number}/requests", [], $query);
+    }
+
+    /**
+     * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentActionsByIncidentId
+     */
+    public function getIncidentActionsByIncidentId($id, $query = []) {
+        return $this->requestIncident('GET', "/id/${id}/actions", [], $query);
+    }
+
+    /**
+     * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentActionsByIncidentNumber
+     */
+    public function getIncidentActionsByIncidentNumber($number, $query = []) {
+        return $this->requestIncident('GET', "/number/${number}/actions", [], $query);
+    }
+
+    /**
+     * @see https://developers.topdesk.com/documentation/index.html#api-Incident-RetrieveTimeSpentOnIncidentById
+     */
+    public function getIncidentTimespentByIncidentId($id) {
+        return $this->requestIncident('GET', "/id/${id}/timespent");
+    }
+
+    /**
+     * @see https://developers.topdesk.com/documentation/index.html#api-Incident-RetrieveTimeSpentOnIncidentByNumber
+     */
+    public function getIncidentTimespentByIncidentNumber($number) {
+        return $this->requestIncident('GET', "/number/${number}/timespent");
+    }
 }

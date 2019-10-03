@@ -7,17 +7,17 @@ trait Attachment
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Attachments-GetIncidentAttachmentsByIncidentId
      */
-    public function getIncidentAttachmentsbyIncidentId($id, $query)
+    public function getIncidentAttachmentsbyIncidentId($id, $query = [])
     {
-        return $this->request('GET', "incidents/id/{$id}/attachments", [], $query);
+        return $this->request('GET', "api/incidents/id/{$id}/attachments", [], $query);
     }
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Attachments-GetIncidentAttachmentsByIncidentNumber
      */
-    public function getIncidentAttachmentsbyIncidentNumber($number, $query)
+    public function getIncidentAttachmentsbyIncidentNumber($number, $query = [])
     {
-        return $this->request('GET', "incidents/number/{$number}/attachments", [], $query);
+        return $this->request('GET', "api/incidents/number/{$number}/attachments", [], $query);
     }
 
     /**
@@ -25,7 +25,7 @@ trait Attachment
      */
     public function uploadIncidentAttachmentByIncidentId($id, $path, $name)
     {
-        return $this->request('POST', "incidents/id/${id}/attachments", [], [], [
+        return $this->request('POST', "api/incidents/id/${id}/attachments", [], [], [
             'multipart' => [
                 [
                     'name' => 'file',
@@ -41,7 +41,7 @@ trait Attachment
      */
     public function uploadIncidentAttachmentByIncidentNumber($number, $path, $name)
     {
-        return $this->request('POST', "incidents/number/${number}/attachments", [], [], [
+        return $this->client->request('POST', "api/incidents/number/${number}/attachments", [], [], [
             'multipart' => [
                 [
                     'name' => 'file',
@@ -50,5 +50,13 @@ trait Attachment
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @see https://developers.topdesk.com/documentation/index.html#api-Attachments-DownloadAttachment
+     */
+    public function downloadIncidentAttachmentByIncidentId($id, $attachmentId) {
+        return $this->request('GET', "api/incidents/id/${id}/attachments/${attachmentId}/download",
+            [], [], [], false);
     }
 }
