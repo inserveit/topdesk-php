@@ -29,22 +29,25 @@ class Api
     /** @var Client */
     protected $client;
 
+    /** @var integer */
+    protected $retries;
+
     const CONNECT_OPERATOR = 'operator';
     const CONNECT_PERSON = 'person';
 
     const TYPE_LOGIN = 1;
     const TYPE_APPLICATION_PASSWORD = 2;
 
-    const RETRIES = 5;
-
     /**
      * Create an instance for the TOPdesk API.
      * @param string $endpoint Your API endpoint, that should end on "/tas/".
+     * @param integer $retries Number of retries for failed requests.
      * @param array $guzzleOptions Optional options to be passed to the Guzzle Client constructor.
      */
-    public function __construct($endpoint = 'https://partnerships.topdesk.net/tas/', $guzzleOptions = [])
+    public function __construct($endpoint = 'https://partnerships.topdesk.net/tas/', $retries = 5, $guzzleOptions = [])
     {
         $this->endpoint = $endpoint;
+        $this->retries = $retries;
 
         $this->client = new Client(array_merge([
             'base_uri' => $this->endpoint,
@@ -135,7 +138,7 @@ class Api
     {
         return Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, RequestException $exception = null) {
             // Limit the number of retries.
-            if ($retries >= self::RETRIES) {
+            if ($retries >= $this->retries) {
                 return false;
             }
 
