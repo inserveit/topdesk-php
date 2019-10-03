@@ -1,0 +1,27 @@
+{
+    "name": "innovaat/topdesk-api",
+    "description": "A PHP implementation for the TOPdesk API",
+    "keywords": [
+        "topdesk",
+        "api",
+        "innovaat",
+        "itil"
+    ],
+    "homepage": "https://github.com/innovaat/topdesk-php",
+    "license": "MIT",
+    "require": {
+        "php": "7.*",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Innovaat\\Topdesk\\": "src"
+        }
+    },
+    "minimum-stability": "stable",
+    "config": {
+        "sort-packages": true
+    },
+    "prefer-stable": true
+}
