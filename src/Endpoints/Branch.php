@@ -12,8 +12,9 @@ trait Branch
     /**
      * @see https://developers.topdesk.com/explorer/?page=supporting-files#/Branches/retrieveBranches
      */
-    public function getListOfBranches() {
-        return $this->requestBranch('GET');
+    public function getListOfBranches($query = [])
+    {
+        return $this->requestBranch('GET', '', [], $query);
     }
 
     /**
@@ -27,14 +28,16 @@ trait Branch
     /**
      * @see https://developers.topdesk.com/explorer/?page=supporting-files#/Branches/getExtendedBranchById
      */
-    public function getBranchById($id) {
+    public function getBranchById($id)
+    {
         return $this->requestBranch('GET', "/id/{$id}");
     }
 
     /**
      * @see https://developers.topdesk.com/explorer/?page=supporting-files#/Branches/putBranch
      */
-    public function updateBranchById($id, $params) {
+    public function updateBranchById($id, $params)
+    {
         return $this->requestBranch('PUT', "/id/{$id}", $params);
     }
 }
