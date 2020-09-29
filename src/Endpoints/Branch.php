@@ -35,7 +35,7 @@ trait Branch
      * @param $query
      * @return
      */
-    public function getBranchById($id, $query)
+    public function getBranchById($id, $query = [])
     {
         return $this->requestBranch('GET', "/id/{$id}", [], $query);
     }
