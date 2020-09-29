@@ -6,6 +6,8 @@ trait Asset
 {
     /**
      * @see https://developers.topdesk.com/explorer/?page=assets#/Assets/getAssets
+     * @param array $query
+     * @return
      */
     public function getListOfAssets($query = [])
     {
@@ -14,6 +16,8 @@ trait Asset
 
     /**
      * @see https://developers.topdesk.com/explorer/?page=assets#/Assets/create
+     * @param array $params
+     * @return
      */
     public function createAsset($params = [])
     {
@@ -22,6 +26,8 @@ trait Asset
 
     /**
      * @see https://developers.topdesk.com/explorer/?page=assets#/Assets/getAssetById
+     * @param $id
+     * @return
      */
     public function getAssetById($id)
     {

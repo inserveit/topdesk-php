@@ -2,7 +2,9 @@
 
 namespace Innovaat\Topdesk;
 
-class TopdeskException extends \Exception
+use Exception;
+
+class TopdeskException extends Exception
 {
     //
 }

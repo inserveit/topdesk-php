@@ -3,11 +3,12 @@
 namespace Innovaat\Topdesk;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use GuzzleHttp\Exception\ConnectException;
 use Innovaat\Topdesk\Endpoints\Asset;
 use Innovaat\Topdesk\Endpoints\Attachment;
 use Innovaat\Topdesk\Endpoints\Branch;
@@ -22,23 +23,18 @@ class Api
 {
     use Incident, Branch, Department, Person, Operator, Attachment, Asset;
 
-    /** @var string */
-    protected $endpoint;
-
-    /** @var array */
-    protected $auth;
-
-    /** @var Client */
-    protected $client;
-
-    /** @var integer */
-    protected $retries;
-
     const CONNECT_OPERATOR = 'operator';
     const CONNECT_PERSON = 'person';
-
     const TYPE_LOGIN = 1;
     const TYPE_APPLICATION_PASSWORD = 2;
+    /** @var string */
+    protected $endpoint;
+    /** @var array */
+    protected $auth;
+    /** @var Client */
+    protected $client;
+    /** @var integer */
+    protected $retries;
 
     /**
      * Create an instance for the TOPdesk API.
@@ -62,43 +58,24 @@ class Api
     }
 
     /**
-     * Login using an application password. This is the preferred way to login, since a stateless header is added
-     * on each request and your account password is not used.
-     * @howto TOPdesk login -> My Settings -> Application passwords -> Add
-     * @param string $username
-     * @param string $applicationPassword
-     * @return $this
+     * Middleware: Retry API request on failed connections or server exceptions, up to a max of RETRIES.
+     * @return callable
      */
-    public function useApplicationPassword($username, $applicationPassword)
+    private function retryMiddleware()
     {
-        $this->auth = [
-            'auth_type' => self::TYPE_APPLICATION_PASSWORD,
-            'username' => $username,
-            'password' => $applicationPassword
-        ];
-        return $this;
-    }
+        return Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, RequestException $exception = null) {
+            // Limit the number of retries.
+            if ($retries >= $this->retries) {
+                return false;
+            }
 
-    /**
-     * Login regularly using username/password combination.
-     * @param $username
-     * @param $password
-     * @param callable $tokenCallback Pass a callback function that receives a `$token` as its only parameter, which you
-     * then need to persist in your own logic, so subsequent calls can use that token. The function needs to return your
-     * `token` as well.
-     * @param string $type The type you wish to login as. Either 'operator' (default)  or 'person'.
-     * @return $this
-     */
-    public function useLogin($username, $password, callable $tokenCallback, $type = self::CONNECT_OPERATOR)
-    {
-        $this->auth = [
-            'auth_type' => self::TYPE_LOGIN,
-            'url' => $type === self::CONNECT_OPERATOR ? 'api/login/operator' : 'api/login/person',
-            'callback' => $tokenCallback,
-            'username' => $username,
-            'password' => $password
-        ];
-        return $this;
+            // Retry connection exceptions.
+            if ($exception instanceof ConnectException || $exception instanceof ServerException) {
+                return true;
+            }
+
+            return false;
+        });
     }
 
     /**
@@ -133,24 +110,43 @@ class Api
     }
 
     /**
-     * Middleware: Retry API request on failed connections or server exceptions, up to a max of RETRIES.
-     * @return callable
+     * Login using an application password. This is the preferred way to login, since a stateless header is added
+     * on each request and your account password is not used.
+     * @howto TOPdesk login -> My Settings -> Application passwords -> Add
+     * @param string $username
+     * @param string $applicationPassword
+     * @return $this
      */
-    private function retryMiddleware()
+    public function useApplicationPassword(string $username, string $applicationPassword)
     {
-        return Middleware::retry(function ($retries, RequestInterface $request, ResponseInterface $response = null, RequestException $exception = null) {
-            // Limit the number of retries.
-            if ($retries >= $this->retries) {
-                return false;
-            }
+        $this->auth = [
+            'auth_type' => self::TYPE_APPLICATION_PASSWORD,
+            'username' => $username,
+            'password' => $applicationPassword
+        ];
+        return $this;
+    }
 
-            // Retry connection exceptions.
-            if ($exception instanceof ConnectException || $exception instanceof ServerException) {
-                return true;
-            }
-
-            return false;
-        });
+    /**
+     * Login regularly using username/password combination.
+     * @param $username
+     * @param $password
+     * @param callable $tokenCallback Pass a callback function that receives a `$token` as its only parameter, which you
+     * then need to persist in your own logic, so subsequent calls can use that token. The function needs to return your
+     * `token` as well.
+     * @param string $type The type you wish to login as. Either 'operator' (default)  or 'person'.
+     * @return $this
+     */
+    public function useLogin($username, $password, callable $tokenCallback, $type = self::CONNECT_OPERATOR)
+    {
+        $this->auth = [
+            'auth_type' => self::TYPE_LOGIN,
+            'url' => $type === self::CONNECT_OPERATOR ? 'api/login/operator' : 'api/login/person',
+            'callback' => $tokenCallback,
+            'username' => $username,
+            'password' => $password
+        ];
+        return $this;
     }
 
     /**
@@ -162,7 +158,7 @@ class Api
      * @param array $options
      * @param boolean $decode JSON decode response body (defaults to true).
      * @return mixed|ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function request($method, $uri = '', array $json = [], array $query = [], array $options = [], $decode = true)
     {

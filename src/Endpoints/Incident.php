@@ -4,21 +4,25 @@ namespace Innovaat\Topdesk\Endpoints;
 
 trait Incident
 {
-    private function requestIncident($method, $uri = '', $json = [], $query = [])
-    {
-        return $this->request($method, "api/incidents{$uri}", $json, $query);
-    }
-
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-CreateIncident
+     * @param $params
+     * @return
      */
     public function createIncident($params)
     {
         return $this->requestIncident('POST', '/', $params);
     }
 
+    private function requestIncident($method, $uri = '', $json = [], $query = [])
+    {
+        return $this->request($method, "api/incidents{$uri}", $json, $query);
+    }
+
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentById
+     * @param $id
+     * @return
      */
     public function getIncidentById($id)
     {
@@ -27,6 +31,8 @@ trait Incident
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentByNumber
+     * @param $number
+     * @return
      */
     public function getIncidentByNumber($number)
     {
@@ -35,6 +41,8 @@ trait Incident
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetListOfIncidents
+     * @param array $query
+     * @return
      */
     public function getListOfIncidents($query = [])
     {
@@ -43,6 +51,8 @@ trait Incident
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-EscalateIncidentById
+     * @param $id
+     * @return
      */
     public function escalateIncidentById($id)
     {
@@ -51,6 +61,8 @@ trait Incident
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-EscalateIncidentByNumber
+     * @param $number
+     * @return
      */
     public function escalateIncidentByNumber($number)
     {
@@ -59,6 +71,8 @@ trait Incident
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-DeescalateIncidentById
+     * @param $id
+     * @return
      */
     public function deescalateIncidentById($id)
     {
@@ -67,6 +81,8 @@ trait Incident
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-DeescalateIncidentByNumber
+     * @param $number
+     * @return
      */
     public function deescalateIncidentByNumber($number)
     {
@@ -75,43 +91,65 @@ trait Incident
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentRequestsByIncidentId
+     * @param $id
+     * @param array $query
+     * @return
      */
-    public function getIncidentRequestsByIncidentId($id, $query = []) {
+    public function getIncidentRequestsByIncidentId($id, $query = [])
+    {
         return $this->requestIncident('GET', "/id/${id}/requests", [], $query);
     }
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentRequestsByIncidentNumber
+     * @param $number
+     * @param array $query
+     * @return
      */
-    public function getIncidentRequestsByIncidentNumber($number, $query = []) {
+    public function getIncidentRequestsByIncidentNumber($number, $query = [])
+    {
         return $this->requestIncident('GET', "/number/${number}/requests", [], $query);
     }
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentActionsByIncidentId
+     * @param $id
+     * @param array $query
+     * @return
      */
-    public function getIncidentActionsByIncidentId($id, $query = []) {
+    public function getIncidentActionsByIncidentId($id, $query = [])
+    {
         return $this->requestIncident('GET', "/id/${id}/actions", [], $query);
     }
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-GetIncidentActionsByIncidentNumber
+     * @param $number
+     * @param array $query
+     * @return
      */
-    public function getIncidentActionsByIncidentNumber($number, $query = []) {
+    public function getIncidentActionsByIncidentNumber($number, $query = [])
+    {
         return $this->requestIncident('GET', "/number/${number}/actions", [], $query);
     }
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-RetrieveTimeSpentOnIncidentById
+     * @param $id
+     * @return
      */
-    public function getIncidentTimespentByIncidentId($id) {
+    public function getIncidentTimespentByIncidentId($id)
+    {
         return $this->requestIncident('GET', "/id/${id}/timespent");
     }
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Incident-RetrieveTimeSpentOnIncidentByNumber
+     * @param $number
+     * @return
      */
-    public function getIncidentTimespentByIncidentNumber($number) {
+    public function getIncidentTimespentByIncidentNumber($number)
+    {
         return $this->requestIncident('GET', "/number/${number}/timespent");
     }
 }

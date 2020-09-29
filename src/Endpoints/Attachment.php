@@ -6,6 +6,9 @@ trait Attachment
 {
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Attachments-GetIncidentAttachmentsByIncidentId
+     * @param $id
+     * @param array $query
+     * @return
      */
     public function getIncidentAttachmentsbyIncidentId($id, $query = [])
     {
@@ -14,6 +17,9 @@ trait Attachment
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Attachments-GetIncidentAttachmentsByIncidentNumber
+     * @param $number
+     * @param array $query
+     * @return
      */
     public function getIncidentAttachmentsbyIncidentNumber($number, $query = [])
     {
@@ -22,6 +28,10 @@ trait Attachment
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Attachments-UploadFileToIncidentById
+     * @param $id
+     * @param $path
+     * @param $name
+     * @return
      */
     public function uploadIncidentAttachmentByIncidentId($id, $path, $name)
     {
@@ -38,6 +48,10 @@ trait Attachment
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Attachments-UploadFileToIncidentByNumber
+     * @param $number
+     * @param $path
+     * @param $name
+     * @return
      */
     public function uploadIncidentAttachmentByIncidentNumber($number, $path, $name)
     {
@@ -54,8 +68,12 @@ trait Attachment
 
     /**
      * @see https://developers.topdesk.com/documentation/index.html#api-Attachments-DownloadAttachment
+     * @param $id
+     * @param $attachmentId
+     * @return
      */
-    public function downloadIncidentAttachmentByIncidentId($id, $attachmentId) {
+    public function downloadIncidentAttachmentByIncidentId($id, $attachmentId)
+    {
         return $this->request('GET', "api/incidents/id/${id}/attachments/${attachmentId}/download",
             [], [], [], false);
     }
