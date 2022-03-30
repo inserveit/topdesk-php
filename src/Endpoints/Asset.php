@@ -33,4 +33,14 @@ trait Asset
     {
         return $this->request('GET', "api/assetmgmt/assets/${id}");
     }
+
+    /**
+     * @see https://developers.topdesk.com/explorer/?page=assets#/assignments/getAssignments
+     * @param $id
+     * @return
+     */
+    public function getAssetAssignments($id)
+    {
+        return $this->request('GET', "api/assetmgmt/assets/${id}/assignments");
+    }
 }
